@@ -1,5 +1,4 @@
 fastapi
 uvicorn
-huggingface_hub
-python-dotenv
 python-multipart
+google-generativeai
