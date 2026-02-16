@@ -1,12 +1,12 @@
 import os
+import json
+import re
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from huggingface_hub import InferenceClient
-from pydantic import BaseModel
 
 app = FastAPI()
 
-# Configuração de CORS para o InfinityFree
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,20 +14,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Puxa o Token das variáveis de ambiente do Render
 HF_TOKEN = os.getenv("HF_TOKEN")
 client = InferenceClient(api_key=HF_TOKEN)
 
 @app.get("/gerar")
 def gerar_questao(tema: str):
-    # Prompt de engenharia para formatação rigorosa
     prompt_sistema = (
-        "Você é um professor especialista em criar questões de exames. "
-        "Sua resposta deve conter APENAS a questão, 4 alternativas (A, B, C, D) e o gabarito no final. "
-        "Use markdown para negrito e pule linhas entre as opções."
+        "Você é um gerador de questões acadêmicas. Responda APENAS em formato JSON puro, sem textos extras ou markdown. "
+        "O formato deve ser: "
+        '{"pergunta": "...", "opcoes": ["A) ...", "B) ...", "C) ...", "D) ..."], "correta": "A"}'
     )
     
-    prompt_usuario = f"Crie uma questão de nível médio sobre o tema: {tema}. Idioma: Português."
+    prompt_usuario = f"Gere uma questão de múltipla escolha sobre {tema}."
 
     try:
         response = client.chat.completions.create(
@@ -39,6 +37,9 @@ def gerar_questao(tema: str):
             max_tokens=600,
             temperature=0.7
         )
-        return {"questao": response.choices[0].message.content}
+        # Limpa possíveis blocos de código markdown do JSON
+        content = response.choices[0].message.content
+        clean_json = re.sub(r'```json|```', '', content).strip()
+        return json.loads(clean_json)
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": "Falha ao formatar JSON", "details": str(e)}
