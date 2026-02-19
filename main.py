@@ -21,7 +21,7 @@ app.add_middleware(
 # =========================
 HF_TOKEN = os.getenv("HF_TOKEN")
 
-MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
+MODEL = "google/flan-t5-base"
 
 HF_URL = f"https://router.huggingface.co/hf-inference/models/{MODEL}"
 
