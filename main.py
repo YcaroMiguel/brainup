@@ -19,7 +19,7 @@ app.add_middleware(
 HF_TOKEN = os.getenv("HF_TOKEN")
 
 # Modelo mais estável no plano grátis
-MODEL_URL = "https://router.huggingface.co/hf-inference/models/google/flan-t5-large"
+MODEL_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
 
 
 # ==============================
