@@ -41,9 +41,10 @@ Responda APENAS em JSON puro no formato:
 """
 
     response = requests.post(
-        "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
+        "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2",
         headers={
-            "Authorization": f"Bearer {HF_TOKEN}"
+            "Authorization": f"Bearer {HF_TOKEN}",
+            "Content-Type": "application/json"
         },
         json={
             "inputs": prompt,
